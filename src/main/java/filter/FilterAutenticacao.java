@@ -32,6 +32,8 @@ public class FilterAutenticacao implements Filter {
 
 		Usuario usuario = (Usuario) session.getAttribute("usuario");
 		
+		response.setCharacterEncoding("UTF-8");
+
 		if (usuario == null && !urlParaAutenticar.equalsIgnoreCase("/principal/ServletLogin")) {
 			RequestDispatcher redireciona = request.getRequestDispatcher("/index.jsp?url=" + urlParaAutenticar);
 			request.setAttribute("msg", "Por favor realize o login!");
