@@ -5,15 +5,22 @@ import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dao.DAOUsuario;
 import model.Usuario;
 
+@MultipartConfig
 @WebServlet("/ServletUsuarioController")
 public class ServletUsuarioController extends ServletGenericUtil {
 
@@ -63,6 +70,14 @@ public class ServletUsuarioController extends ServletGenericUtil {
 				request.setAttribute("msg", "Usuários carregados");
 				request.setAttribute("usuarios", usuarios);
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
+			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("downloadFoto")) {
+				String idUser = request.getParameter("id");
+				
+				Usuario usuario = daoUsuario.consultaUsuarioID(idUser, super.getUserLogado(request));
+				if (usuario.getFotouser() != null && !usuario.getFotouser().isEmpty()) {
+					response.setHeader("Content-Disposition", "attachment;filename=arquivo." + usuario.getExtensaofotouser());
+					response.getOutputStream().write(Base64.decodeBase64(usuario.getFotouser().split("\\,")[1]));
+				}
 			}
 
 			else {
@@ -101,6 +116,17 @@ public class ServletUsuarioController extends ServletGenericUtil {
 			usuario.setSenha(senha);
 			usuario.setPerfil(perfil);
 			usuario.setSexo(sexo);
+
+			if (ServletFileUpload.isMultipartContent(request)) {
+				Part part = request.getPart("filefoto");
+
+				if (part != null && part.getSize() > 0) {
+					byte[] foto = IOUtils.toByteArray(part.getInputStream());
+					String imagemBase64 = "data:image/" + part.getContentType().split("\\/")[1] + ";base64," + Base64.encodeBase64String(foto);
+					usuario.setFotouser(imagemBase64);
+					usuario.setExtensaofotouser(part.getContentType().split("\\/")[1]);
+				}
+			}
 
 			if (daoUsuario.validarLogin(usuario.getLogin()) && usuario.getId() == null) {
 				msg = "Já existe usuário com o mesmo login, informe outro login";

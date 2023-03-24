@@ -35,6 +35,21 @@ public class DAOUsuario {
 			preparedStatement.execute();
 
 			connection.commit();
+
+			if (usuario.getFotouser() != null && !usuario.getFotouser().isEmpty()) {
+				sql = "UPDATE usuario set fotouser =?, extensaofotouser=? where login = ?";
+
+				preparedStatement = connection.prepareStatement(sql);
+
+				preparedStatement.setString(1, usuario.getFotouser());
+				preparedStatement.setString(2, usuario.getExtensaofotouser());
+				preparedStatement.setString(3, usuario.getLogin());
+
+				preparedStatement.execute();
+
+				connection.commit();
+			}
+
 		} else {
 			String sql = "UPDATE usuario SET login=?, senha=?, nome=?, email=?, perfil=?, sexo=? WHERE id = " + usuario.getId() + ";";
 
@@ -50,6 +65,20 @@ public class DAOUsuario {
 			preparedStatement.execute();
 
 			connection.commit();
+
+			if (usuario.getFotouser() != null && !usuario.getFotouser().isEmpty()) {
+				sql = "UPDATE usuario set fotouser =?, extensaofotouser=? where login = ?";
+
+				preparedStatement = connection.prepareStatement(sql);
+
+				preparedStatement.setString(1, usuario.getFotouser());
+				preparedStatement.setString(2, usuario.getExtensaofotouser());
+				preparedStatement.setString(3, usuario.getLogin());
+
+				preparedStatement.execute();
+
+				connection.commit();
+			}
 		}
 
 		return this.consultaUsuario(usuario.getLogin(), userLogado);
@@ -75,6 +104,7 @@ public class DAOUsuario {
 			usuario.setNome(resultado.getString("nome"));
 			usuario.setPerfil(resultado.getString("perfil"));
 			usuario.setSexo(resultado.getString("sexo"));
+			usuario.setFotouser(resultado.getString("fotouser"));
 		}
 
 		return usuario;
@@ -100,6 +130,7 @@ public class DAOUsuario {
 			usuario.setSenha(resultado.getString("senha"));
 			usuario.setPerfil(resultado.getString("perfil"));
 			usuario.setSexo(resultado.getString("sexo"));
+			usuario.setFotouser(resultado.getString("fotouser"));
 
 			list.add(usuario);
 		}
@@ -125,6 +156,7 @@ public class DAOUsuario {
 			usuario.setUseradmin(resultado.getBoolean("useradmin"));
 			usuario.setPerfil(resultado.getString("perfil"));
 			usuario.setSexo(resultado.getString("sexo"));
+			usuario.setFotouser(resultado.getString("fotouser"));
 		}
 
 		return usuario;
@@ -172,6 +204,7 @@ public class DAOUsuario {
 			usuario.setUseradmin(resultado.getBoolean("useradmin"));
 			usuario.setPerfil(resultado.getString("perfil"));
 			usuario.setSexo(resultado.getString("sexo"));
+			usuario.setFotouser(resultado.getString("fotouser"));
 		}
 
 		return usuario;
