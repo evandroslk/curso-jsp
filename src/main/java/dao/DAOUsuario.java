@@ -20,7 +20,8 @@ public class DAOUsuario {
 	public Usuario gravarUsuario(Usuario usuario, Long userLogado) throws Exception {
 
 		if (usuario.isNovo()) {
-			String sql = "INSERT INTO usuario(login, senha, nome, email, usuario_id, perfil, sexo, useradmin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+			String sql = "INSERT INTO usuario(login, senha, nome, email, usuario_id, perfil, sexo, useradmin, cep, logradouro, bairro, localidade, uf, numero) "
+					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
 			preparedStatement.setString(1, usuario.getLogin());
@@ -31,6 +32,12 @@ public class DAOUsuario {
 			preparedStatement.setString(6, usuario.getPerfil());
 			preparedStatement.setString(7, usuario.getSexo());
 			preparedStatement.setBoolean(8, false);
+			preparedStatement.setString(9, usuario.getCep());
+			preparedStatement.setString(10, usuario.getLogradouro());
+			preparedStatement.setString(11, usuario.getBairro());
+			preparedStatement.setString(12, usuario.getLocalidade());
+			preparedStatement.setString(13, usuario.getUf());
+			preparedStatement.setString(14, usuario.getNumero());
 
 			preparedStatement.execute();
 
@@ -51,7 +58,7 @@ public class DAOUsuario {
 			}
 
 		} else {
-			String sql = "UPDATE usuario SET login=?, senha=?, nome=?, email=?, perfil=?, sexo=? WHERE id = " + usuario.getId() + ";";
+			String sql = "UPDATE usuario SET login=?, senha=?, nome=?, email=?, perfil=?, sexo=?, cep=?, logradouro=?, bairro=?, localidade=?, uf=?, numero=? WHERE id = " + usuario.getId() + ";";
 
 			PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
@@ -61,6 +68,12 @@ public class DAOUsuario {
 			preparedStatement.setString(4, usuario.getEmail());
 			preparedStatement.setString(5, usuario.getPerfil());
 			preparedStatement.setString(6, usuario.getSexo());
+			preparedStatement.setString(7, usuario.getCep());
+			preparedStatement.setString(8, usuario.getLogradouro());
+			preparedStatement.setString(9, usuario.getBairro());
+			preparedStatement.setString(10, usuario.getLocalidade());
+			preparedStatement.setString(11, usuario.getUf());
+			preparedStatement.setString(12, usuario.getNumero());
 
 			preparedStatement.execute();
 
@@ -105,6 +118,13 @@ public class DAOUsuario {
 			usuario.setPerfil(resultado.getString("perfil"));
 			usuario.setSexo(resultado.getString("sexo"));
 			usuario.setFotouser(resultado.getString("fotouser"));
+			usuario.setFotouser(resultado.getString("fotouser"));
+			usuario.setCep(resultado.getString("cep"));
+			usuario.setLogradouro(resultado.getString("logradouro"));
+			usuario.setBairro(resultado.getString("bairro"));
+			usuario.setLocalidade(resultado.getString("localidade"));
+			usuario.setUf(resultado.getString("uf"));
+			usuario.setNumero(resultado.getString("numero"));
 		}
 
 		return usuario;
@@ -157,6 +177,13 @@ public class DAOUsuario {
 			usuario.setPerfil(resultado.getString("perfil"));
 			usuario.setSexo(resultado.getString("sexo"));
 			usuario.setFotouser(resultado.getString("fotouser"));
+			usuario.setFotouser(resultado.getString("fotouser"));
+			usuario.setCep(resultado.getString("cep"));
+			usuario.setLogradouro(resultado.getString("logradouro"));
+			usuario.setBairro(resultado.getString("bairro"));
+			usuario.setLocalidade(resultado.getString("localidade"));
+			usuario.setUf(resultado.getString("uf"));
+			usuario.setNumero(resultado.getString("numero"));
 		}
 
 		return usuario;
@@ -205,6 +232,12 @@ public class DAOUsuario {
 			usuario.setPerfil(resultado.getString("perfil"));
 			usuario.setSexo(resultado.getString("sexo"));
 			usuario.setFotouser(resultado.getString("fotouser"));
+			usuario.setCep(resultado.getString("cep"));
+			usuario.setLogradouro(resultado.getString("logradouro"));
+			usuario.setBairro(resultado.getString("bairro"));
+			usuario.setLocalidade(resultado.getString("localidade"));
+			usuario.setUf(resultado.getString("uf"));
+			usuario.setNumero(resultado.getString("numero"));
 		}
 
 		return usuario;
