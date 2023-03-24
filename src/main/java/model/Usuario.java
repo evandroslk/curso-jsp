@@ -13,6 +13,7 @@ public class Usuario implements Serializable {
 	private String senha;
 	private String perfil;
 	private boolean useradmin;
+	private String sexo;
 
 	public boolean isUseradmin() {
 		return useradmin;
@@ -77,6 +78,14 @@ public class Usuario implements Serializable {
 			return false;
 		}
 		return id == null;
+	}
+
+	public String getSexo() {
+		return sexo;
+	}
+
+	public void setSexo(String sexo) {
+		this.sexo = sexo;
 	}
 
 }

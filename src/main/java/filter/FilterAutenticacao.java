@@ -13,8 +13,6 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import model.Usuario;
-
 @WebFilter(urlPatterns = { "/principal/*" })
 public class FilterAutenticacao implements Filter {
 
@@ -30,11 +28,11 @@ public class FilterAutenticacao implements Filter {
 
 		String urlParaAutenticar = req.getServletPath();
 
-		Usuario usuario = (Usuario) session.getAttribute("usuario");
+		String usuarioLogado = (String) session.getAttribute("usuarioLogado");
 		
 		response.setCharacterEncoding("UTF-8");
 
-		if (usuario == null && !urlParaAutenticar.equalsIgnoreCase("/principal/ServletLogin")) {
+		if (usuarioLogado == null && !urlParaAutenticar.equalsIgnoreCase("/principal/ServletLogin")) {
 			RequestDispatcher redireciona = request.getRequestDispatcher("/index.jsp?url=" + urlParaAutenticar);
 			request.setAttribute("msg", "Por favor realize o login!");
 			redireciona.forward(request, response);

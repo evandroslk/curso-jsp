@@ -17,22 +17,26 @@ public class DAOUsuario {
 		connection = SingleConnectionBanco.getConnection();
 	}
 
-	public Usuario gravarUsuario(Usuario usuario) throws Exception {
+	public Usuario gravarUsuario(Usuario usuario, Long userLogado) throws Exception {
 
 		if (usuario.isNovo()) {
-			String sql = "INSERT INTO usuario(login, senha, nome, email) VALUES (?, ?, ?, ?)";
+			String sql = "INSERT INTO usuario(login, senha, nome, email, usuario_id, perfil, sexo, useradmin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 			PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
 			preparedStatement.setString(1, usuario.getLogin());
 			preparedStatement.setString(2, usuario.getSenha());
 			preparedStatement.setString(3, usuario.getNome());
 			preparedStatement.setString(4, usuario.getEmail());
+			preparedStatement.setLong(5, userLogado);
+			preparedStatement.setString(6, usuario.getPerfil());
+			preparedStatement.setString(7, usuario.getSexo());
+			preparedStatement.setBoolean(8, false);
 
 			preparedStatement.execute();
 
 			connection.commit();
 		} else {
-			String sql = "UPDATE usuario SET login=?, senha=?, nome=?, email=? WHERE id = " + usuario.getId() + ";";
+			String sql = "UPDATE usuario SET login=?, senha=?, nome=?, email=?, perfil=?, sexo=? WHERE id = " + usuario.getId() + ";";
 
 			PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
@@ -40,23 +44,26 @@ public class DAOUsuario {
 			preparedStatement.setString(2, usuario.getSenha());
 			preparedStatement.setString(3, usuario.getNome());
 			preparedStatement.setString(4, usuario.getEmail());
+			preparedStatement.setString(5, usuario.getPerfil());
+			preparedStatement.setString(6, usuario.getSexo());
 
 			preparedStatement.execute();
 
 			connection.commit();
 		}
 
-		return this.consultaUsuario(usuario.getLogin());
+		return this.consultaUsuario(usuario.getLogin(), userLogado);
 
 	}
 
-	public Usuario consultaUsuarioID(String id) throws Exception {
+	public Usuario consultaUsuarioID(String id, Long userLogado) throws Exception {
 		Usuario usuario = new Usuario();
 
-		String sql = "select * from usuario where id = ? ";
+		String sql = "select * from usuario where id = ? and useradmin is false and usuario_id = ?";
 
 		PreparedStatement statement = connection.prepareStatement(sql);
 		statement.setLong(1, Long.parseLong(id));
+		statement.setLong(2, userLogado);
 
 		ResultSet resultado = statement.executeQuery();
 
@@ -66,17 +73,20 @@ public class DAOUsuario {
 			usuario.setLogin(resultado.getString("login"));
 			usuario.setSenha(resultado.getString("senha"));
 			usuario.setNome(resultado.getString("nome"));
+			usuario.setPerfil(resultado.getString("perfil"));
+			usuario.setSexo(resultado.getString("sexo"));
 		}
 
 		return usuario;
 	}
 
-	public List<Usuario> consultaUsuarioList(String nome) throws Exception {
+	public List<Usuario> consultaUsuarioList(String nome, Long userLogado) throws Exception {
 		List<Usuario> list = new ArrayList<Usuario>();
 
-		String sql = "select * from usuario where nome like ?";
+		String sql = "select * from usuario where nome like ? and useradmin is false and usuario_id = ?";
 		PreparedStatement statement = connection.prepareStatement(sql);
 		statement.setString(1, "%" + nome + "%");
+		statement.setLong(2, userLogado);
 
 		ResultSet resultado = statement.executeQuery();
 
@@ -88,6 +98,8 @@ public class DAOUsuario {
 			usuario.setLogin(resultado.getString("login"));
 			usuario.setNome(resultado.getString("nome"));
 			usuario.setSenha(resultado.getString("senha"));
+			usuario.setPerfil(resultado.getString("perfil"));
+			usuario.setSexo(resultado.getString("sexo"));
 
 			list.add(usuario);
 		}
@@ -95,10 +107,10 @@ public class DAOUsuario {
 		return list;
 	}
 
-	public Usuario consultaUsuario(String login) throws Exception {
+	public Usuario consultaUsuario(String login, Long userLogado) throws Exception {
 		Usuario usuario = new Usuario();
 		
-		String sql = "select * from usuario where upper(login) = upper('" + login + "')";
+		String sql = "select * from usuario where login = '" + login + "' and useradmin is false and usuario_id = " + userLogado;
 
 		PreparedStatement statement = connection.prepareStatement(sql);
 
@@ -110,13 +122,16 @@ public class DAOUsuario {
 			usuario.setLogin(resultado.getString("login"));
 			usuario.setSenha(resultado.getString("senha"));
 			usuario.setNome(resultado.getString("nome"));
+			usuario.setUseradmin(resultado.getBoolean("useradmin"));
+			usuario.setPerfil(resultado.getString("perfil"));
+			usuario.setSexo(resultado.getString("sexo"));
 		}
 
 		return usuario;
 	}
 
 	public boolean validarLogin(String login) throws Exception {
-		String sql = "select count(1) > 0 as existe from usuario where upper(login) = upper('" + login + "');";
+		String sql = "select count(1) > 0 as existe from usuario where login = '" + login + "'";
 
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
@@ -137,6 +152,29 @@ public class DAOUsuario {
 		statement.executeUpdate();
 
 		connection.commit();
+	}
+
+	public Usuario consultaUsuarioLogado(String login) throws Exception {
+		Usuario usuario = new Usuario();
+		
+		String sql = "select * from usuario where login = '" + login + "'";
+
+		PreparedStatement statement = connection.prepareStatement(sql);
+
+		ResultSet resultado = statement.executeQuery();
+
+		while (resultado.next()) {
+			usuario.setId(resultado.getLong("id"));
+			usuario.setEmail(resultado.getString("email"));
+			usuario.setLogin(resultado.getString("login"));
+			usuario.setSenha(resultado.getString("senha"));
+			usuario.setNome(resultado.getString("nome"));
+			usuario.setUseradmin(resultado.getBoolean("useradmin"));
+			usuario.setPerfil(resultado.getString("perfil"));
+			usuario.setSexo(resultado.getString("sexo"));
+		}
+
+		return usuario;
 	}
 
 }

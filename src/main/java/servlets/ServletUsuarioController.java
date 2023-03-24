@@ -6,7 +6,6 @@ import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -16,7 +15,7 @@ import dao.DAOUsuario;
 import model.Usuario;
 
 @WebServlet("/ServletUsuarioController")
-public class ServletUsuarioController extends HttpServlet {
+public class ServletUsuarioController extends ServletGenericUtil {
 
 	private static final long serialVersionUID = 1L;
 
@@ -31,7 +30,7 @@ public class ServletUsuarioController extends HttpServlet {
 				String idUser = request.getParameter("id");
 				daoUsuario.deletarUser(idUser);
 
-				List<Usuario> usuarios = daoUsuario.consultaUsuarioList("");
+				List<Usuario> usuarios = daoUsuario.consultaUsuarioList("", super.getUserLogado(request));
 				request.setAttribute("usuarios", usuarios);
 				request.setAttribute("msg", "Excluído com sucesso");
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
@@ -42,7 +41,7 @@ public class ServletUsuarioController extends HttpServlet {
 			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("buscarUserAjax")) {
 				String nomeBusca = request.getParameter("nomeBusca");
 
-				List<Usuario> dadosJsonUser = daoUsuario.consultaUsuarioList(nomeBusca);
+				List<Usuario> dadosJsonUser = daoUsuario.consultaUsuarioList(nomeBusca, super.getUserLogado(request));
 
 				ObjectMapper mapper = new ObjectMapper();
 
@@ -52,13 +51,15 @@ public class ServletUsuarioController extends HttpServlet {
 			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("buscarEditar")) {
 				String id = request.getParameter("id");
 
-				Usuario usuario = daoUsuario.consultaUsuarioID(id);
+				Usuario usuario = daoUsuario.consultaUsuarioID(id, super.getUserLogado(request));
 
+				List<Usuario> usuarios = daoUsuario.consultaUsuarioList("", super.getUserLogado(request));
+				request.setAttribute("usuarios", usuarios);
 				request.setAttribute("msg", "Usuário em edição");
 				request.setAttribute("usuario", usuario);
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("listarUser")) {
-				List<Usuario> usuarios = daoUsuario.consultaUsuarioList("");
+				List<Usuario> usuarios = daoUsuario.consultaUsuarioList("", super.getUserLogado(request));
 				request.setAttribute("msg", "Usuários carregados");
 				request.setAttribute("usuarios", usuarios);
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
@@ -88,6 +89,8 @@ public class ServletUsuarioController extends HttpServlet {
 			String email = request.getParameter("email");
 			String login = request.getParameter("login");
 			String senha = request.getParameter("senha");
+			String perfil = request.getParameter("perfil");
+			String sexo = request.getParameter("sexo");
 
 			Usuario usuario = new Usuario();
 
@@ -96,6 +99,8 @@ public class ServletUsuarioController extends HttpServlet {
 			usuario.setEmail(email);
 			usuario.setLogin(login);
 			usuario.setSenha(senha);
+			usuario.setPerfil(perfil);
+			usuario.setSexo(sexo);
 
 			if (daoUsuario.validarLogin(usuario.getLogin()) && usuario.getId() == null) {
 				msg = "Já existe usuário com o mesmo login, informe outro login";
@@ -105,10 +110,10 @@ public class ServletUsuarioController extends HttpServlet {
 				} else {
 					msg = "Atualizado com sucesso!";
 				}
-				usuario = daoUsuario.gravarUsuario(usuario);
+				usuario = daoUsuario.gravarUsuario(usuario, super.getUserLogado(request));
 			}
 
-			List<Usuario> usuarios = daoUsuario.consultaUsuarioList("");
+			List<Usuario> usuarios = daoUsuario.consultaUsuarioList("", super.getUserLogado(request));
 
 			request.setAttribute("msg", msg);
 			request.setAttribute("usuarios", usuarios);

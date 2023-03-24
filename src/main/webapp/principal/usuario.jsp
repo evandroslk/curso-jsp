@@ -65,13 +65,41 @@
                                         					</div>
                                         					<div class="form-group form-default form-static-label">
                                         						<select class="form-control" name="perfil">
-                                        							<option disabled="disabled">[Selecione o Perfil]</option>
+                                        							<option selected="selected" value="">[Selecione o Perfil]</option>
+                                        							
                                         							<option value="ADMIN" <%
                                         								Usuario usuario = (Usuario) request.getAttribute("usuario");
                                         							
-                                        								if (usuario != null && usuario)
+                                        								if (usuario != null && usuario.getPerfil().equals("ADMIN")) {
+                                        									out.print(" ");
+                                        									out.print("selected=\"selected\"");
+                                        									out.print(" ");
+                                        								}
                                         							%>>Admin</option>
+                                        							
+                                        							<option value="SECRETARIA" <%
+                                        								usuario = (Usuario) request.getAttribute("usuario");
+                                        							
+                                        								if (usuario != null && usuario.getPerfil().equals("SECRETARIA")) {
+                                        									out.print(" ");
+                                        									out.print("selected=\"selected\"");
+                                        									out.print(" ");
+                                        								}
+                                        							%>>Secretária</option>
+                                        							
+                                        							<option value="AUXILIAR" <%
+                                        								usuario = (Usuario) request.getAttribute("usuario");
+                                        							
+                                        								if (usuario != null && usuario.getPerfil().equals("AUXILIAR")) {
+                                        									out.print(" ");
+                                        									out.print("selected=\"selected\"");
+                                        									out.print(" ");
+                                        								}
+                                        							%>>Auxiliar</option>
+                                        							
                                         						</select>
+                                        						<span class="form-bar"></span>
+                                        						<label class="float-label">Perfil:</label>
                                         					</div>
                                         					<div class="form-group form-default form-static-label">
                                         						<input type="text" name="login" id="login" class="form-control" required value="${usuario.login}">
@@ -82,6 +110,28 @@
                                         						<input type="password" name="senha" id="senha" class="form-control" required value="${usuario.senha}">
                                         						<span class="form-bar"></span>
                                         						<label class="float-label">Password:</label>
+                                        					</div>
+                                        					
+                                        					<div class="form-group form-default form-static-label">
+                                        						<input type="radio" name="sexo" checked="checked" value="MASCULINO"
+                                        						<% 
+                                        							usuario = (Usuario) request.getAttribute("usuario");
+                                        						
+                                        							if (usuario != null && usuario.getSexo().equals("MASCULINO")) {
+                                        								out.print(" ");
+                                        								out.print("checked=\"checked\"");
+                                        								out.print(" ");
+                                        							}
+                                        						%> >Masculino
+                                        						<input type="radio" name="sexo" value="FEMININO" <%
+                                        							usuario = (Usuario) request.getAttribute("usuario");
+                                        						
+                                        							if (usuario != null && usuario.getSexo().equals("FEMININO")) {
+                                        								out.print(" ");
+                                        								out.print("checked=\"checked\"");
+                                        								out.print(" ");
+                                        							}
+                                        						%>> Feminino
                                         					</div>
                                         					
                                         					<button type="button" class="btn btn-primary waves-effect waves-light" onclick="limparForm();">Novo</button>

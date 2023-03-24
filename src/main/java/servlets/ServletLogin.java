@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import dao.DAOLogin;
+import dao.DAOUsuario;
 import model.Usuario;
 
 @WebServlet(urlPatterns = { "/ServletLogin", "/principal/ServletLogin" })
@@ -18,6 +19,7 @@ public class ServletLogin extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private DAOLogin daoLogin = new DAOLogin();
+	private DAOUsuario daoUsuario = new DAOUsuario();
 
 	public ServletLogin() {
 
@@ -42,6 +44,11 @@ public class ServletLogin extends HttpServlet {
 				usuario.setSenha(senha);
 
 				if (daoLogin.validarAutenticacao(usuario)) {
+					
+					usuario = daoUsuario.consultaUsuarioLogado(login);
+
+					request.getSession().setAttribute("usuarioLogado", usuario.getLogin());
+					request.getSession().setAttribute("perfil", usuario.getPerfil());
 
 					if (url == null || url.equals("null")) {
 						url = "principal/principal.jsp";
