@@ -30,6 +30,9 @@ public class ServletUsuarioController extends HttpServlet {
 			if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("deletar")) {
 				String idUser = request.getParameter("id");
 				daoUsuario.deletarUser(idUser);
+
+				List<Usuario> usuarios = daoUsuario.consultaUsuarioList("");
+				request.setAttribute("usuarios", usuarios);
 				request.setAttribute("msg", "Excluído com sucesso");
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("deletarajax")) {
@@ -54,7 +57,14 @@ public class ServletUsuarioController extends HttpServlet {
 				request.setAttribute("msg", "Usuário em edição");
 				request.setAttribute("usuario", usuario);
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
-			} else {
+			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("listarUser")) {
+				List<Usuario> usuarios = daoUsuario.consultaUsuarioList("");
+				request.setAttribute("msg", "Usuários carregados");
+				request.setAttribute("usuarios", usuarios);
+				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
+			}
+
+			else {
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 			}
 		} catch (Exception e) {
@@ -98,7 +108,10 @@ public class ServletUsuarioController extends HttpServlet {
 				usuario = daoUsuario.gravarUsuario(usuario);
 			}
 
+			List<Usuario> usuarios = daoUsuario.consultaUsuarioList("");
+
 			request.setAttribute("msg", msg);
+			request.setAttribute("usuarios", usuarios);
 			request.setAttribute("usuario", usuario);
 			request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 		} catch (Exception e) {

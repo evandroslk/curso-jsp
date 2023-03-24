@@ -11,6 +11,24 @@ public class Usuario implements Serializable {
 	private String email;
 	private String login;
 	private String senha;
+	private String perfil;
+	private boolean useradmin;
+
+	public boolean isUseradmin() {
+		return useradmin;
+	}
+
+	public void setUseradmin(boolean useradmin) {
+		this.useradmin = useradmin;
+	}
+
+	public String getPerfil() {
+		return perfil;
+	}
+
+	public void setPerfil(String perfil) {
+		this.perfil = perfil;
+	}
 
 	public String getLogin() {
 		return login;

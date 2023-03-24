@@ -1,6 +1,8 @@
+<%@page import="model.Usuario"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    
+
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
     
 <!DOCTYPE html>
 <html lang="en">
@@ -62,9 +64,19 @@
                                         						<label class="float-label">Email:</label>
                                         					</div>
                                         					<div class="form-group form-default form-static-label">
+                                        						<select class="form-control" name="perfil">
+                                        							<option disabled="disabled">[Selecione o Perfil]</option>
+                                        							<option value="ADMIN" <%
+                                        								Usuario usuario = (Usuario) request.getAttribute("usuario");
+                                        							
+                                        								if (usuario != null && usuario)
+                                        							%>>Admin</option>
+                                        						</select>
+                                        					</div>
+                                        					<div class="form-group form-default form-static-label">
                                         						<input type="text" name="login" id="login" class="form-control" required value="${usuario.login}">
                                         						<span class="form-bar"></span>
-                                        						<label class="float-label">Email:</label>
+                                        						<label class="float-label">Login:</label>
                                         					</div>
                                         					<div class="form-group form-default form-static-label">
                                         						<input type="password" name="senha" id="senha" class="form-control" required value="${usuario.senha}">
@@ -82,6 +94,27 @@
                                         	</div>
                                         </div>
                                         <span id="msg">${msg}</span>
+                                        <div style="height: 300px; overflow: scroll;">
+                                        	<table class="table" id="tabelaresultadosview">
+                                        		<thead>
+                                        			<tr>
+                                        				<th scope="col">ID</th>
+                                        				<th scope="col">Nome</th>
+                                        				<th scope="col">Ver</th>
+                                        			</tr>
+                                        		</thead>
+                                        		<tbody>
+                                        			<c:forEach items="${usuarios}" var="u">
+                                        				<tr>
+                                        					<td><c:out value="${u.id}"></c:out></td>
+                                        					<td><c:out value="${u.nome}"></c:out></td>
+                                        					<td><a class="btn btn-success"
+                                        						 href="<%= request.getContextPath() %>/ServletUsuarioController?acao=buscarEditar&acao=buscarEditar&id=${u.id}">Ver</a></td>
+                                        				</tr>
+                                        			</c:forEach>
+                                        		</tbody>
+                                        	</table>
+                                        </div>
                                     </div>
                                     <!-- Page-body end -->
                                 </div>
